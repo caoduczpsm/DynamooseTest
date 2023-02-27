@@ -4,6 +4,10 @@ const app = express();
 
 const CharacterModel = require('./model/character');
 
+const UserModel = require('./model/User');
+const MessageModel = require('./model/Message');
+const ChatModel = require('./model/Chat');
+
 AWS.config.update({
     region: "us-east-1",
     endpoint: "http://localhost:8000"
@@ -32,10 +36,10 @@ app.get('/', (req, res) => {
 });
 
 // Get All Records
-app.get('/characters', async (req, res) => {
+app.get('/chat', async (req, res) => {
     try {
-        const characters = await CharacterModel.scan().exec();
-        res.json(characters);
+        const chat = await ChatModel.scan().exec();
+        res.json(chat);
     } catch (err) {
         console.error(err);
         res.status(500).json({ err: 'Something went wrong' });
@@ -43,11 +47,11 @@ app.get('/characters', async (req, res) => {
 });
 
 // Post one record
-app.post('/characters', async (req, res) => {
-    const newCharacter = req.body;
+app.post('/user', async (req, res) => {
+    const newUser = req.body;
     try {
-        const characters = await CharacterModel.create(newCharacter);
-        res.json(characters);
+        const user = await UserModel.create(newUser);
+        res.json(user);
     } catch (err) {
         console.error(err);
         res.status(500).json({ err: 'Something went wrong' });
