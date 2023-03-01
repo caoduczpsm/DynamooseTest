@@ -11,7 +11,7 @@ const ddb = new dynamoose.aws.ddb.DynamoDB({
 dynamoose.aws.ddb.local();
 
 const blockHistorySchema = new dynamoose.Schema({
-    _id: {
+    id: {
         type: Number,
         validate: function (v) { return v > 0; },
         hashKey: true,

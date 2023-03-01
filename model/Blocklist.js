@@ -10,15 +10,15 @@ const ddb = new dynamoose.aws.ddb.DynamoDB({
 dynamoose.aws.ddb.local();
 
 const blockListSchema = new dynamoose.Schema({
-    _id: {
+    id: {
         type: Number,
         validate: function (v) { return v > 0; },
         hashKey: true,
     },
     email: { type: "String", unique: true, required: true, rangeKey: true },
     mobile: { type: "String", required: true },
-    firstName: { type: "String", required: true },
-    lastName: { type: "String", required: true },
+    first_name: { type: "String", required: true },
+    last_name: { type: "String", required: true },
     ssn: { type: "String" },
 },
     // {

@@ -37,16 +37,16 @@ getBlockHistory = asyncHandler(async (req, res, next) => {
 
 
 blockUser = asyncHandler(async (req, res, next) => {
-    const { email, mobile, firstName, lastName } = req.body;
+    const { email, mobile, first_name, last_name } = req.body;
     const response = await BlockListModel.scan().count().exec();
     const currentId = response.count + 1;
     try {
         const newBlockList = {
-            "_id": currentId,
+            "id": currentId,
             "email": email,
             "mobile": mobile,
-            "firstName": firstName,
-            "lastName": lastName,
+            "first_name": first_name,
+            "last_name": last_name,
         };
         const blocklist = await BlockListModel.create(newBlockList);
         res.json(blocklist);
@@ -62,7 +62,7 @@ addBlockHistory = asyncHandler(async (req, res, next) => {
     const currentId = response.count + 1;
     try {
         const newBlockHistory = {
-            "_id": currentId,
+            "id": currentId,
             "author": newBlockHistoryRequest.author,
             "reason": newBlockHistoryRequest.reason,
             "blockstate": newBlockHistoryRequest.blockstate,
@@ -100,7 +100,7 @@ checkUserInBlocklist = asyncHandler(async (req, res, next) => {
         if (err) {
             console.log(err);
         } else {
-            await BlockHistoryModel.scan({ "blocklist_id": blockListResult[0]._id }).exec((error, historyResoult) => {
+            await BlockHistoryModel.scan({ "blocklist_id": blockListResult[0].id }).exec((error, historyResoult) => {
                 if (error) {
                     console.log(err);
                 } else {
