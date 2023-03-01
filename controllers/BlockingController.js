@@ -100,19 +100,27 @@ checkUserInBlocklist = asyncHandler(async (req, res, next) => {
         if (err) {
             console.log(err);
         } else {
-            await BlockHistoryModel.scan({ "blocklist_id": blockListResult[0].id }).exec((error, historyResoult) => {
-                if (error) {
-                    console.log(err);
-                } else {
-                    if (historyResoult[0].blockstate === "BLOCKED") {
-                        res.status(403);
-                        res.json({ message: "Please contact to admin system to book this rom!" });
+            if (!(blockListResult.count === 0)) {
+                await BlockHistoryModel.scan({ "blocklist_id": blockListResult[0].id }).exec((error, historyResoult) => {
+                    if (error) {
+                        console.log(err);
                     } else {
-                        //next();
-                        res.json({ message: "Success" });
+                        if (historyResoult[0].blockstate === "BLOCKED") {
+                            res.status(403);
+                            res.json({ message: "Please contact to admin system to book this rom!" });
+                        } else {
+                            //next();
+                            res.json({ message: "Success" });
+                        }
                     }
-                }
-            });
+
+
+                });
+            } else {
+                //next();
+                res.json({ message: "Success" });
+            }
+
         }
     });
 
