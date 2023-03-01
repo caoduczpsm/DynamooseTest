@@ -113,8 +113,6 @@ checkUserInBlocklist = asyncHandler(async (req, res, next) => {
                             res.json({ message: "Success" });
                         }
                     }
-
-
                 });
             } else {
                 //next();
