@@ -65,7 +65,7 @@ addBlockHistory = asyncHandler(async (req, res, next) => {
             "id": currentId,
             "author": newBlockHistoryRequest.author,
             "reason": newBlockHistoryRequest.reason,
-            "state": newBlockHistoryRequest.blockstate,
+            "state": newBlockHistoryRequest.state,
             "blocklist_id": newBlockHistoryRequest.blocklist_id,
         };
         const blockhistory = await BlockHistoryModel.create(newBlockHistory);
@@ -101,11 +101,11 @@ isPassedBlocklistCheck = asyncHandler(async (req, res, next) => {
             console.log(err);
         } else {
             if (!(blockListResult.count === 0)) {
-                await BlockHistoryModel.scan({ "blocklist_id": blockListResult[0].id }).exec((error, historyResoult) => {
+                await BlockHistoryModel.scan({ "blocklist_id": blockListResult[0].id }).exec((error, historyResult) => {
                     if (error) {
                         console.log(err);
                     } else {
-                        if (historyResoult[0].state === "BLOCKED") {
+                        if (historyResult[historyResult.length - 1].state === "BLOCKED") {
                             res.status(403);
                             res.json({ message: "Please contact to admin system to book this rom!" });
                         } else {
