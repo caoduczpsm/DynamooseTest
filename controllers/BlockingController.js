@@ -65,7 +65,7 @@ addBlockHistory = asyncHandler(async (req, res, next) => {
             "id": currentId,
             "author": newBlockHistoryRequest.author,
             "reason": newBlockHistoryRequest.reason,
-            "blockstate": newBlockHistoryRequest.blockstate,
+            "state": newBlockHistoryRequest.blockstate,
             "blocklist_id": newBlockHistoryRequest.blocklist_id,
         };
         const blockhistory = await BlockHistoryModel.create(newBlockHistory);
@@ -94,7 +94,7 @@ deleteTable = asyncHandler(async (req, res, next) => {
 })
 
 
-checkUserInBlocklist = asyncHandler(async (req, res, next) => {
+isPassedBlocklistCheck = asyncHandler(async (req, res, next) => {
     const { email, mobile } = req.body;
     await BlockListModel.scan({ "email": email, "mobile": mobile }).exec(async (err, blockListResult) => {
         if (err) {
@@ -105,7 +105,7 @@ checkUserInBlocklist = asyncHandler(async (req, res, next) => {
                     if (error) {
                         console.log(err);
                     } else {
-                        if (historyResoult[0].blockstate === "BLOCKED") {
+                        if (historyResoult[0].state === "BLOCKED") {
                             res.status(403);
                             res.json({ message: "Please contact to admin system to book this rom!" });
                         } else {
@@ -124,4 +124,4 @@ checkUserInBlocklist = asyncHandler(async (req, res, next) => {
 
 });
 
-module.exports = { checkUserInBlocklist, getBlockList, getBlockHistory, blockUser, addBlockHistory, deleteTable };
+module.exports = { isPassedBlocklistCheck, getBlockList, getBlockHistory, blockUser, addBlockHistory, deleteTable };

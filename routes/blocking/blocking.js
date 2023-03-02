@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { checkUserInBlocklist, getBlockList, getBlockHistory, blockUser, addBlockHistory, deleteTable } = require('../../controllers/BlockingController');
+const { isPassedBlocklistCheck, getBlockList, getBlockHistory, blockUser, addBlockHistory, deleteTable } = require('../../controllers/BlockingController');
 
-router.post('/blocklist-check', checkUserInBlocklist);
+router.post('/blocklist-check', isPassedBlocklistCheck);
 router.get('/blocklist', getBlockList);
 router.get('/blockhistory', getBlockHistory);
 router.post('/block', blockUser);
