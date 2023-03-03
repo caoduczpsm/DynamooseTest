@@ -19,7 +19,7 @@ const blockHistorySchema = new dynamoose.Schema({
     author: { type: String, required: true },
     reason: { type: String, required: true },
     state: { type: String, required: true },
-    blocklist_id: { type: Number, required: true, rangeKey: true },
+    blocklist_id: { type: Number, required: true },
 },
     {
         "timestamps": {

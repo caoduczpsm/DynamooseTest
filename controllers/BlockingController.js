@@ -15,6 +15,8 @@ AWS.config.update({
     endpoint: "http://localhost:8000"
 });
 
+// GET: All Block List
+// URL: http://localhost:3000/api/blocking/blocklist
 getBlockList = asyncHandler(async (req, res, next) => {
     try {
         const blocklist = await BlockListModel.scan().exec();
@@ -25,6 +27,20 @@ getBlockList = asyncHandler(async (req, res, next) => {
     }
 });
 
+// GET: Block List By User Id
+// URL: http://localhost:3000/api/blocking/blocklist
+getBlockListById = asyncHandler(async (req, res, next) => {
+    const userId = req.params.id;
+    const blockListById = await BlockListModel.get(parseInt(userId, 10));
+    if (blockListById) {
+        res.json(blockListById);
+    } else {
+        res.status(404).json({ err: 'User not found' });
+    }
+});
+
+// GET: All Block History
+// URL: http://localhost:3000/api/blocking/blockhistory
 getBlockHistory = asyncHandler(async (req, res, next) => {
     try {
         const blockhistory = await BlockHistoryModel.scan().exec();
@@ -35,7 +51,22 @@ getBlockHistory = asyncHandler(async (req, res, next) => {
     }
 });
 
+// GET: Block List By Block List Id
+// URL: http://localhost:3000/api/blocking/blockhistory/:id
+getBlockHistoryById = asyncHandler(async (req, res, next) => {
+    const blockListId = req.params.id;
+    BlockHistoryModel.scan({ "blocklist_id": parseInt(blockListId, 10) }).exec((err, blockHistoryResult) => {
+        if (err) {
+            res.status(404).json({ err: 'Block History not found' });
+        } else {
+            res.json(blockHistoryResult);
+        }
+    });
 
+});
+
+// POST: Block User
+// URL: http://localhost:3000/api/blocking/block
 blockUser = asyncHandler(async (req, res, next) => {
     const { email, mobile, first_name, last_name } = req.body;
     const response = await BlockListModel.scan().count().exec();
@@ -56,6 +87,8 @@ blockUser = asyncHandler(async (req, res, next) => {
     }
 });
 
+// POST: Add One Record Block History
+// URL: http://localhost:3000/api/blocking/blockhistory
 addBlockHistory = asyncHandler(async (req, res, next) => {
     const newBlockHistoryRequest = req.body;
     const response = await BlockHistoryModel.scan().count().exec();
@@ -76,6 +109,8 @@ addBlockHistory = asyncHandler(async (req, res, next) => {
     }
 })
 
+// DELETE: Delete Table By Table Name
+// URL: http://localhost:3000/api/blocking/delete/:table
 deleteTable = asyncHandler(async (req, res, next) => {
     let TABLE_NAME = req.params.table;
     var params = {
@@ -93,7 +128,8 @@ deleteTable = asyncHandler(async (req, res, next) => {
     });
 })
 
-
+// POST: Check User Is In Block List By Email and Mobile
+// URL: http://localhost:3000/api/blocking/blocklist-check
 isPassedBlocklistCheck = asyncHandler(async (req, res, next) => {
     const { email, mobile } = req.body;
     await BlockListModel.scan({ "email": email, "mobile": mobile }).exec(async (err, blockListResult) => {
@@ -124,4 +160,7 @@ isPassedBlocklistCheck = asyncHandler(async (req, res, next) => {
 
 });
 
-module.exports = { isPassedBlocklistCheck, getBlockList, getBlockHistory, blockUser, addBlockHistory, deleteTable };
+module.exports = {
+    isPassedBlocklistCheck, getBlockList, getBlockHistory,
+    blockUser, addBlockHistory, deleteTable, getBlockListById, getBlockHistoryById
+};

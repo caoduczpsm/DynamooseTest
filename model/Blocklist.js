@@ -15,7 +15,7 @@ const blockListSchema = new dynamoose.Schema({
         validate: function (v) { return v > 0; },
         hashKey: true,
     },
-    email: { type: "String", unique: true, required: true, rangeKey: true },
+    email: { type: "String", unique: true, required: true },
     mobile: { type: "String", required: true },
     first_name: { type: "String", required: true },
     last_name: { type: "String", required: true },
