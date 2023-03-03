@@ -133,7 +133,7 @@ deleteTable = asyncHandler(async (req, res, next) => {
 // URL: http://localhost:3000/api/blocking/blocklist-check
 isPassedBlocklistCheck = asyncHandler(async (req, res, next) => {
     const { email, mobile } = req.body;
-    await BlockListModel.scan("email").eq(email).and().where("mobile").eq(mobile).exec(async (err, blockListResult) => {
+    await BlockListModel.scan({ "email": email, "mobile": mobile }).exec(async (err, blockListResult) => {
         if (err) {
             res.json({ "error": err })
         } else {
