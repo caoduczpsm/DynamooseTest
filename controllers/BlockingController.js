@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const AWS = require("aws-sdk");
+const { SortOrder } = require("dynamoose/dist/General");
 const BlockListModel = require('../model/Blocklist');
 const BlockHistoryModel = require('../model/BlockHistory');
 
@@ -132,15 +133,20 @@ deleteTable = asyncHandler(async (req, res, next) => {
 // URL: http://localhost:3000/api/blocking/blocklist-check
 isPassedBlocklistCheck = asyncHandler(async (req, res, next) => {
     const { email, mobile } = req.body;
-    await BlockListModel.scan({ "email": email, "mobile": mobile }).exec(async (err, blockListResult) => {
+    await BlockListModel.scan("email").eq(email).and().where("mobile").eq(mobile).exec(async (err, blockListResult) => {
         if (err) {
-            console.log(err);
+            res.json({ "error": err })
         } else {
             if (!(blockListResult.count === 0)) {
                 await BlockHistoryModel.scan({ "blocklist_id": blockListResult[0].id }).exec((error, historyResult) => {
                     if (error) {
-                        console.log(err);
+                        res.json({ "error": error })
                     } else {
+                        historyResult.sort((history1, history2) => {
+                            if (history1.id < history2.id) {
+                                return -1;
+                            }
+                        })
                         if (historyResult[historyResult.length - 1].state === "BLOCKED") {
                             res.status(403);
                             res.json({ message: "Please contact to admin system to book this rom!" });
